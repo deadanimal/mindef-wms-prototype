@@ -1,0 +1,231 @@
+<div class="header">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Pengurusan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-clipboard text-dark"></i> </a>
+							</li>
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)" class="text-dark"> Pengurusan </a>
+                            </li>
+						</ol>
+					</nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class= "row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Potongan Gaji Penghuni</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartPayCut"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Cara Bayaran Bil</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartPayMethod"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Utiliti</h3>
+                </div>
+                <div class="dataTables_wrapper py-4">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="datatable_length">
+                                <label>
+                                    Show
+                                    <select 
+                                        name="datatable_length"
+                                        aria-controls="datatable"
+                                        class="form-control form-control-sm"
+                                        (change)="entriesChange($event)"
+                                    >
+                                        <option value="5" [selected]="tableEntries==5">5</option>
+                                        <option value="10" [selected]="tableEntries==10">10</option>
+                                        <option value="15" [selected]="tableEntries==15">15</option>
+                                        <option value="-1" [selected]="tableEntries==-1">All</option>
+                                    </select>
+                                    records
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div id="datatable_filter" class="dataTables_filter">
+                                <label>
+                                    <input 
+                                        type="search"
+                                        class="form-control form-control-sm"
+                                        placeholder="Search records"
+                                        aria-controls="datatable"
+                                        (keyup)="filterTable($event)" 
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div class= "col-sm-12 col-md-2 pb-4">
+                            <a class="btn btn-success text-white" (click)="openModal(regEditStaff)">Daftar</a>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col">
+                    <ngx-datatable 
+                        class="bootstrap selection-cell"
+                        [columnMode]="'force'"
+                        [headerHeight]="50"
+                        [footerHeight]="50" 
+                        [rowHeight]="'auto'"
+                        [selected]="tableSelected"
+                        [selectionType]="'multiClick'"
+                        [limit]="tableEntries != -1 ? tableEntries:undefined"
+                        [rows]="tableTemp" 
+                        (activate)="onActivate($event)"
+                    >
+
+                        <ngx-datatable-column name="readerName">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Nama Pembaca</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="id1">
+                            <ng-template ngx-datatable-header-template>
+                                <span>ID Pertama</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="id2">
+                            <ng-template ngx-datatable-header-template>
+                                <span>ID Ke-2</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="designate">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Kawasan</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column>
+                            <ng-template ngx-datatable-header-template>
+                                <span>Jawatan</span>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <span *ngIf="row.status == 1" class="badge badge-pill badge-warning">Admin</span>
+                                <span *ngIf="row.status == 2" class="badge badge-pill badge-success">Anggota</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column>
+                            <ng-template ngx-datatable-header-template>
+                                <span>Jana Maklumat</span>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="btn btn-sm btn-success">
+                                    <i class="fas fa-file-download text-white">Download</i>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column>
+                            <ng-template ngx-datatable-header-template>
+                                <span>Pantau/KemasKini/Padam</span>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="btn btn-sm btn-info" (click)="openModal(regEditStaff)">
+                                    <i class="fas fa-eye text-dark"></i>
+                                </a>
+                                <a class="btn btn-sm btn-success" (click)="openModal(regEditStaff)">
+                                    <i class="fas fa-edit text-white"></i>
+                                </a>
+                                <a class="btn btn-sm btn-warning">
+                                    <i class="fas fa-trash text-white"></i>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #regEditStaff>
+    <div class="modal-content">
+        <div class="modal-header bg-default">
+            <h4 class="modal-title pull-left text-white"> Maklumat Staff </h4>
+            <button type="button" class="close pull-right" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true" class="text-white">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> Nama </label>
+                        <input class="form-control" placeholder="Nama"
+                            formControlName="name" type="text">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> IC </label>
+                        <input class="form-control" placeholder="IC"
+                            formControlName="ic" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Jawatan</label>
+                        <input class="form-control" placeholder="Jawatan"
+                            formControlName="position" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"> Lokasi Bertugas</label>
+                        <input class="form-control" placeholder="Lokasi Bertugas" 
+                            formControlName="asgnLoc" type="text">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> ID 1</label>
+                        <input class="form-control" placeholder="ID 1"
+                            formControlName="id1" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label"> ID 2</label>
+                        <input class="form-control" placeholder="ID 2" 
+                            formControlName="id2" type="text">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class=" btn btn-link btn-warning ml-auto text-white" data-dismiss="modal" type="button" (click)="closeModal()">
+                Close
+            </button>
+        </div>
+    </div>
+</ng-template>

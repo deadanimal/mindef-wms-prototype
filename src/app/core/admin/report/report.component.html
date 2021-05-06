@@ -1,0 +1,218 @@
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Laporan</h6>
+
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class=" breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-chart-bar text-dark"> </i> </a>
+                            </li>
+                            <li aria-current="page" class="breadcrumb-item active">
+                                Laporan
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class= "row">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Bil. Pembaca per Kem/RKAT</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartReadPerRKAT"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Bil. Laluan per Kem/RKAT</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartRoutePerRKAT"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class= "row">
+        <div class="col-xs-12 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Purata Penggunaan Mengikut Bulan</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartUsePerMonth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card" id="print-section">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Urusan Laporan</h3>
+                </div>
+                <div class="dataTables_wrapper py-4">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="datatable_length">
+                                <label>
+                                    Show
+                                    <select 
+                                        name="datatable_length"
+                                        aria-controls="datatable"
+                                        class="form-control form-control-sm"
+                                        (change)="entriesChange($event)"
+                                    >
+                                        <option value="5" [selected]="tableEntries==5">5</option>
+                                        <option value="10" [selected]="tableEntries==10">10</option>
+                                        <option value="15" [selected]="tableEntries==15">15</option>
+                                        <option value="-1" [selected]="tableEntries==-1">All</option>
+                                    </select>
+                                    records
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div id="datatable_filter" class="dataTables_filter">
+                                <label>
+                                    <input 
+                                        type="search"
+                                        class="form-control form-control-sm"
+                                        placeholder="Search records"
+                                        aria-controls="datatable"
+                                        (keyup)="filterTable($event)" 
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div class= "col-sm-12 col-md-2 pb-4">
+                            <a class="btn btn-success text-white" (click)="openModal(regReport)">Tambah</a>
+                        </div>
+                    </div>
+                    <ngx-datatable 
+                        class="bootstrap selection-cell"
+                        [columnMode]="'force'"
+                        [headerHeight]="50"
+                        [footerHeight]="50" 
+                        [rowHeight]="'auto'"
+                        [selected]="tableSelected"
+                        [selectionType]="'multiClick'"
+                        [limit]="tableEntries != -1 ? tableEntries:undefined"
+                        [rows]="tableTemp" 
+                        (activate)="onActivate($event)"
+                    >
+
+                        <ngx-datatable-column name="reportName">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Nama Laporan</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="reportDesc">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Penerangan</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="outDate">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Tarikh Terbit</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="designate">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Penglibatan</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column>
+                            <ng-template ngx-datatable-header-template>
+                                <span>Tindakan</span>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="btn btn-sm btn-success text-white">
+                                    <i class="fas fa-file-download"></i>Muat Turun
+                                </a>
+                                <a class="btn btn-sm btn-warning text-white">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #regReport>
+    <div class="modal-content">
+        <div class="modal-header bg-default">
+            <h4 class="modal-title pull-left text-white"> Maklumat Laporan </h4>
+            <button type="button" class="close pull-right" (click)="closeModal()" aria-label="Close">
+                <span aria-hidden="true" class="text-white">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> Nama laporan </label>
+                        <input class="form-control" placeholder="Nama laporan"
+                            formControlName="reportName" type="text">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> Penerangan </label>
+                        <input class="form-control" placeholder="Penerangan"
+                            formControlName="reportDesc" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Tarikh Terbit</label>
+                        <input type="date" class="form-control" required="" placeholder="01/01/2021">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label"> Penglibatan</label>
+                        <input class="form-control" placeholder="Penglibatan" formControlName="designate" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class=" custom-file">
+                <input class=" custom-file-input" id="customFileLang" lang="en"
+                    type="file" />
+                <label class=" custom-file-label" for="customFileLang">
+                    Select file
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class=" btn btn-outline-danger ml-auto" data-dismiss="modal" type="button" (click)="closeModal()">
+                Batal
+            </button>
+            <button class=" btn btn-outline-success text-right" type="button" (click)="closeModal()">
+                Daftar
+            </button>
+        </div>
+    </div>
+</ng-template>

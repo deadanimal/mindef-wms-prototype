@@ -1,0 +1,401 @@
+<div class="header">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Kem / RKAT</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-home text-dark"></i> </a>
+							</li>
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)" class="text-dark"> Kem / RKAT </a>
+                              </li>
+						</ol>
+					</nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class= "row">
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Penggunaan per Rumah</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartUsePerHouse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0">Bilangan Penghuni per Rumah</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chartResPerHouse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h3 class="m-0 d-inline-block ">Senarai Penghuni Kawasan</h3>
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                Tunjuk RKAT Kawasan
+                                <select name="designatedCounty" >
+                                    <option value="Paya" >Sri Bayu, P.Pinang</option>
+                                    <option value="Bera" >Bera, Pahang</option>
+                                    <option value="Gemas" >Gemas, N. Sembilan</option>
+                                    <option value="Semua" >Semua</option>
+                                </select>
+                            </li>
+						</ol>
+					</nav>
+                </div>
+                <div class="dataTables_wrapper py-4">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="datatable_length">
+                                <label>
+                                    Show
+                                    <select 
+                                        name="datatable_length"
+                                        aria-controls="datatable"
+                                        class="form-control form-control-sm"
+                                        (change)="entriesChange($event)"
+                                    >
+                                        <option value="5" [selected]="tableEntries==5">5</option>
+                                        <option value="10" [selected]="tableEntries==10">10</option>
+                                        <option value="15" [selected]="tableEntries==15">15</option>
+                                        <option value="-1" [selected]="tableEntries==-1">All</option>
+                                    </select>
+                                    records
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-4">
+                            <div id="datatable_filter" class="dataTables_filter">
+                                <label>
+                                    <input 
+                                        type="search"
+                                        class="form-control form-control-sm"
+                                        placeholder="Search records"
+                                        aria-controls="datatable"
+                                        (keyup)="filterTable($event)" 
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div class= "col-sm-12 col-md-2 pb-4">
+                            <a class="btn btn-success text-white" (click)="openModal(regEditKemRKAT)">Daftar</a>
+                        </div>
+                    </div>
+                    <div class="row"><div class="col">
+                    <ngx-datatable 
+                        class="bootstrap selection-cell"
+                        [columnMode]="'force'"
+                        [headerHeight]="50"
+                        [footerHeight]="50" 
+                        [rowHeight]="'auto'"
+                        [selected]="tableSelected"
+                        [selectionType]="'multiClick'"
+                        [limit]="tableEntries != -1 ? tableEntries:undefined"
+                        [rows]="tableTemp" 
+                        (activate)="onActivate($event)"
+                    >
+
+                        <ngx-datatable-column name="houseNo">
+                            <ng-template ngx-datatable-header-template>
+                                <span>No. Rumah</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="id1">
+                            <ng-template ngx-datatable-header-template>
+                                <span>ID</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="residentName">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Penghuni Rumah</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="residentNum">
+                            <ng-template ngx-datatable-header-template>
+                                <span>Bil. Penghuni</span>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column>
+                            <ng-template ngx-datatable-header-template>
+                                <span>Pantau/KemasKini/Padam</span>
+                            </ng-template>
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="btn btn-sm btn-info" (click)="openModal(viewKemRKAT)">
+                                    <i class="fas fa-eye text-dark"></i>
+                                </a>
+                                <a class="btn btn-sm btn-success" (click)="openModal(regEditKemRKAT)">
+                                    <i class="fas fa-edit text-white"></i>
+                                </a>
+                                <a class="btn btn-sm btn-warning">
+                                    <i class="fas fa-trash text-white"></i>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #regEditKemRKAT>
+    <div class="modal-header bg-default">
+        <h6 class="modal-title text-white my-auto" id="compInfo">
+            Maklumat Penghuni
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto">&times; </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Nama Penghuni</label>
+                    <input class="form-control" placeholder="Nama Penghuni"
+                        formControlName="compName" type="text">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Nombor IC</label>
+                    <input class="form-control" placeholder="Nombor IC"
+                        formControlName="regNo" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Alamat Rumah</label>
+                    <input class="form-control" placeholder="Alamat Rumah"
+                        formControlName="regDate" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">ID 1</label>
+                    <input class="form-control" placeholder="ID 1"
+                        formControlName="regDate" type="text">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">ID 2</label>
+                    <input class="form-control" placeholder="ID 2"
+                        formControlName="regDate" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Penghuni Lain</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Nombor IC</th>
+                                    <th scope="col">ID 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td><input placeholder= "Nama" type="text"></td>
+                                    <td><input placeholder= "Nombor IC" type="text"></td>
+                                    <td><input placeholder= "ID 1" type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td><input placeholder= "Nama" type="text"></td>
+                                    <td><input placeholder= "Nombor IC" type="text"></td>
+                                    <td><input placeholder= "ID 1" type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td><input placeholder= "Nama" type="text"></td>
+                                    <td><input placeholder= "Nombor IC" type="text"></td>
+                                    <td><input placeholder= "ID 1" type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-info text-white">+Baris</button>
+                        <button class="btn btn-warning text-white">-Baris</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button
+            class="btn btn-outline-danger ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+
+        <button 
+            class="btn btn-success"
+            type="button"
+        >
+            Daftar
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #viewKemRKAT>
+    <div class="modal-header bg-default">
+        <h6 class="modal-title text-white my-auto" id="compInfo">
+            Maklumat Penghuni
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto">&times; </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Nama Penghuni</label>
+                    <input class="form-control" placeholder="Ahmad B. Abdul"
+                        formControlName="compName" type="text" disabled>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Nombor IC</label>
+                    <input class="form-control" placeholder="999999-99-9999"
+                        formControlName="regNo" type="text" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Alamat Rumah</label>
+                    <input class="form-control" placeholder="No 99 Jalan 99 Taman Sembilan 99999 N. Sembilan"
+                        formControlName="regDate" type="text" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">ID 1</label>
+                    <input class="form-control" placeholder="ABA99"
+                        formControlName="regDate" type="text" disabled>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">ID 2</label>
+                    <input class="form-control" placeholder="99J9T9N9"
+                        formControlName="regDate" type="text" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Penghuni Lain</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Nombor IC</th>
+                                    <th scope="col">ID 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Zaleha</td>
+                                    <td>000000-00-0000</td>
+                                    <td>Z00</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Ali</td>
+                                    <td>111111-11-1111</td>
+                                    <td>A01</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Abu</td>
+                                    <td>222222-22-2222</td>
+                                    <td>A02</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button
+            class="btn btn-outline-danger ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
